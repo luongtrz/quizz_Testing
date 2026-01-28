@@ -913,6 +913,23 @@ body {
     opacity: 0.8;
 }
 
+.review-explanation {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--bg-app);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.review-explanation strong {
+    color: var(--primary);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .header {
@@ -1093,4 +1110,23 @@ body {
     #btnReview {
         grid-column: 1 / -1;
     }
+}
+
+/* Explanation Box (Immediate Feedback) */
+.explanation-content {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    animation: fadeIn 0.3s ease;
+}
+
+.explanation-content strong {
+    color: var(--primary);
+    display: block;
+    margin-bottom: 0.5rem;
 }

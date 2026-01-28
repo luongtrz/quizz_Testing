@@ -178,6 +178,18 @@ class QuizApp {
             </button>`;
         }).join('');
 
+        // Render Explanation if answered
+        const expContainer = document.getElementById('explanationContent');
+        if (answered) {
+            expContainer.innerHTML = `
+                <strong>💡 Giải thích chi tiết:</strong>
+                ${q.exp || 'Chưa có giải thích cho câu hỏi này.'}
+            `;
+            expContainer.style.display = 'block';
+        } else {
+            expContainer.style.display = 'none';
+        }
+
         if (!answered) {
             optsList.querySelectorAll('.option-btn').forEach(opt => {
                 opt.addEventListener('click', (e) => this.selectAnswer(parseInt(opt.dataset.index)));
@@ -299,6 +311,11 @@ class QuizApp {
                         <strong>Bạn chọn:</strong> ${letters[q.ans]}. ${q.opts[q.ans]}
                     </div>
                 `}
+                
+                <div class="review-explanation">
+                    <strong>💡 Giải thích chi tiết:</strong>
+                    ${q.exp || 'Chưa có giải thích cho câu hỏi này.'}
+                </div>
             </div>`;
         }).join('');
 
