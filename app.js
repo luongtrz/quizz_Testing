@@ -14,6 +14,15 @@ class QuizApp {
         this.initTheme();
         this.bindEvents();
         this.renderTopics();
+
+        // Check for saved quiz state
+        const saved = localStorage.getItem('quizState');
+        if (saved) {
+            if (confirm('Bạn có bài quiz đang làm dở. Tiếp tục?')) {
+                this.restoreQuizState();
+            }
+            // If Cancel, keep state for next visit
+        }
     }
 
     initTheme() {
@@ -47,8 +56,38 @@ class QuizApp {
         document.getElementById('btnBackReview').addEventListener('click', () => this.showScreen('resultScreen'));
         document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
 
+        // Add home navigation to logo click
+        document.querySelector('.logo').addEventListener('click', () => {
+            // Check if quiz is active and has progress
+            const quizActive = document.getElementById('quizScreen').classList.contains('active');
+            const hasProgress = this.questions && this.questions.length > 0 &&
+                (this.currentIndex > 0 || Object.keys(this.answers).length > 0);
+
+            if (quizActive && hasProgress) {
+                if (confirm('Bạn có chắc muốn về trang chủ? Tiến độ bài làm sẽ bị mất.')) {
+                    this.goHome();
+                }
+            } else {
+                this.goHome();
+            }
+        });
+
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.filterReview(e.target.dataset.filter));
+        });
+
+        // Keyboard shortcuts for quiz navigation
+        document.addEventListener('keydown', (e) => {
+            // Only work when quiz screen is active
+            if (!document.getElementById('quizScreen').classList.contains('active')) return;
+
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                this.prevQuestion();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                this.nextQuestion();
+            }
         });
     }
 
@@ -135,7 +174,7 @@ class QuizApp {
                 cls += ' selected';
             }
             return `<button class="${cls}" data-index="${i}" ${answered ? 'disabled' : ''}>
-                <strong>${letters[i]}.</strong> ${opt}
+                <strong>${letters[i]}.</strong>${opt}
             </button>`;
         }).join('');
 
@@ -161,6 +200,7 @@ class QuizApp {
         }
         this.updateStats();
         this.renderQuestion();
+        this.saveQuizState(); // Auto-save after each answer
     }
 
     updateStats() {
@@ -172,6 +212,7 @@ class QuizApp {
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.renderQuestion();
+            this.saveQuizState(); // Auto-save on navigation
         }
     }
 
@@ -179,6 +220,7 @@ class QuizApp {
         if (this.currentIndex < this.questions.length - 1) {
             this.currentIndex++;
             this.renderQuestion();
+            this.saveQuizState(); // Auto-save on navigation
         } else {
             this.showResults();
         }
@@ -209,6 +251,10 @@ class QuizApp {
             icon.textContent = '📚';
             title.textContent = 'Cần ôn tập thêm!';
         }
+
+        // Save to history and clear active state
+        this.saveQuizHistory();
+        this.clearQuizState();
 
         this.showScreen('resultScreen');
     }
@@ -267,6 +313,7 @@ class QuizApp {
     }
 
     goHome() {
+        this.clearQuizState(); // Clear saved progress
         this.showScreen('homeScreen');
     }
 
@@ -277,6 +324,13 @@ class QuizApp {
     showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
+
+        if (screenId === 'quizScreen') {
+            document.body.classList.add('quiz-mode');
+        } else {
+            document.body.classList.remove('quiz-mode');
+        }
+
         window.scrollTo(0, 0);
     }
 
@@ -287,6 +341,76 @@ class QuizApp {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
         return arr;
+    }
+
+    // ============ LocalStorage Persistence ============
+
+    saveQuizState() {
+        const state = {
+            currentTopic: this.currentTopic,
+            questions: this.questions,
+            currentIndex: this.currentIndex,
+            answers: this.answers,
+            correctCount: this.correctCount,
+            incorrectCount: this.incorrectCount,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('quizState', JSON.stringify(state));
+    }
+
+    restoreQuizState() {
+        const saved = localStorage.getItem('quizState');
+        if (!saved) return false;
+
+        try {
+            const state = JSON.parse(saved);
+            // Check if state is less than 24 hours old
+            if (Date.now() - state.timestamp > 24 * 60 * 60 * 1000) {
+                this.clearQuizState();
+                return false;
+            }
+
+            this.currentTopic = state.currentTopic;
+            this.questions = state.questions;
+            this.currentIndex = state.currentIndex;
+            this.answers = state.answers;
+            this.correctCount = state.correctCount;
+            this.incorrectCount = state.incorrectCount;
+
+            this.updateStats();
+            this.showScreen('quizScreen');
+            this.renderQuestion();
+            return true;
+        } catch (e) {
+            this.clearQuizState();
+            return false;
+        }
+    }
+
+    clearQuizState() {
+        localStorage.removeItem('quizState');
+    }
+
+    saveQuizHistory(result) {
+        const history = this.getQuizHistory();
+        history.unshift({
+            topic: this.currentTopic?.name || 'Unknown',
+            total: this.questions.length,
+            correct: this.correctCount,
+            incorrect: this.incorrectCount,
+            percent: Math.round((this.correctCount / this.questions.length) * 100),
+            date: new Date().toISOString()
+        });
+        // Keep only last 20 results
+        localStorage.setItem('quizHistory', JSON.stringify(history.slice(0, 20)));
+    }
+
+    getQuizHistory() {
+        try {
+            return JSON.parse(localStorage.getItem('quizHistory')) || [];
+        } catch {
+            return [];
+        }
     }
 }
 
