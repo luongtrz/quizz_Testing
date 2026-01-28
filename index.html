@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Software Testing Quiz</title>
+    <meta name="description" content="Bộ câu hỏi trắc nghiệm ôn tập Software Testing - KTPM Tester">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">📘 Software Testing Quiz</h1>
+                <div class="header-right">
+                    <div class="header-stats" id="headerStats">
+                        <span class="stat-badge">
+                            <span class="stat-icon">✅</span>
+                            <span id="correctCount">0</span> Đúng
+                        </span>
+                        <span class="stat-badge incorrect">
+                            <span class="stat-icon">❌</span>
+                            <span id="incorrectCount">0</span> Sai
+                        </span>
+                    </div>
+                    <button class="btn-theme-toggle" id="themeToggle" aria-label="Chuyển chế độ sáng/tối">
+                        <span class="theme-icon">Chế độ: 🌙</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Screen -->
+            <section class="screen home-screen active" id="homeScreen">
+                <div class="topic-grid" id="topicGrid">
+                    <!-- Topics will be loaded here -->
+                </div>
+
+                <div class="quick-actions">
+                    <button class="btn btn-primary btn-large" id="btnRandomQuiz">
+                        <span class="btn-icon">🎲</span>
+                        Làm Ngẫu Nhiên (20 câu)
+                    </button>
+                    <button class="btn btn-secondary btn-large" id="btnAllQuiz">
+                        <span class="btn-icon">📚</span>
+                        Làm Tất Cả
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen quiz-screen" id="quizScreen">
+                <div class="quiz-header">
+                    <button class="btn-back" id="btnBack">
+                        <span>←</span> Quay lại
+                    </button>
+                    <div class="quiz-progress">
+                        <span id="currentQ">1</span> / <span id="totalQ">20</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div class="question-card" id="questionCard">
+                    <div class="question-meta">
+                        <span class="topic-badge" id="topicBadge">Topic</span>
+                        <span class="q-number" id="qNumber">Câu 1</span>
+                    </div>
+                    <h3 class="question-text" id="questionText">Loading...</h3>
+                    <div class="options-list" id="optionsList">
+                        <!-- Options will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="quiz-footer">
+                    <button class="btn btn-secondary" id="btnPrev" disabled>← Trước</button>
+                    <button class="btn btn-primary" id="btnNext">Tiếp →</button>
+                </div>
+            </section>
+
+            <!-- Result Screen -->
+            <section class="screen result-screen" id="resultScreen">
+                <div class="result-card">
+                    <div class="result-icon" id="resultIcon">🎉</div>
+                    <h2 class="result-title" id="resultTitle">Hoàn Thành!</h2>
+                    <div class="result-score">
+                        <span class="score-number" id="scorePercent">0</span>
+                        <span class="score-label">%</span>
+                    </div>
+                    <div class="result-details">
+                        <div class="result-stat correct">
+                            <span class="stat-value" id="finalCorrect">0</span>
+                            <span class="stat-label">Đúng</span>
+                        </div>
+                        <div class="result-stat incorrect">
+                            <span class="stat-value" id="finalIncorrect">0</span>
+                            <span class="stat-label">Sai</span>
+                        </div>
+                        <div class="result-stat">
+                            <span class="stat-value" id="finalSkipped">0</span>
+                            <span class="stat-label">Bỏ qua</span>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <button class="btn btn-primary" id="btnReview">📝 Xem lại đáp án</button>
+                        <button class="btn btn-secondary" id="btnHome">🏠 Về trang chủ</button>
+                        <button class="btn btn-accent" id="btnRetry">🔄 Làm lại</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Review Screen -->
+            <section class="screen review-screen" id="reviewScreen">
+                <div class="review-header">
+                    <button class="btn-back" id="btnBackReview">
+                        <span>←</span> Quay lại kết quả
+                    </button>
+                    <h2>Xem lại đáp án</h2>
+                    <div class="review-filter">
+                        <button class="filter-btn active" data-filter="all">Tất cả</button>
+                        <button class="filter-btn" data-filter="incorrect">Sai</button>
+                        <button class="filter-btn" data-filter="skipped">Bỏ qua</button>
+                    </div>
+                </div>
+                <div class="review-list" id="reviewList">
+                    <!-- Review items will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="questions.js?v=2"></script>
+    <script src="app.js?v=2"></script>
+</body>
+
+</html>
