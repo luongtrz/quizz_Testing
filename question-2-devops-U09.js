@@ -167,26 +167,26 @@ DEVOPS_QUIZ_DATA.topics[8].questions = [
     exp: "<b>✅ Đáp án đúng là C: Istio là open-source service mesh</b><br>Istio cung cấp traffic management, security, policy, metrics và tracing cho microservices.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là Figma/Sketch.<br>❌ B là RCS kiểu cũ.<br>❌ D là MySQL/PostgreSQL."
   },
   {
-    q: "What does Istio mean in Greek? (Istio trong tiếng Hy Lạp nghĩa là gì?)",
+    q: "What problem does Istio help reduce in microservices? (Istio giup giam van de gi trong microservices?)",
     opts: [
-      "Spyglass",
-      "Bridge",
-      "Cloud",
-      "Sail"
+      "Lack of any source control (Khong co source control)",
+      "Need to store Docker images publicly (Can luu Docker image cong khai)",
+      "Need to rewrite every service into one language (Phai viet lai moi service bang mot ngon ngu)",
+      "Duplicating traffic-management and security logic inside each service (Lap lai logic traffic va security trong tung service)"
     ],
     ans: 3,
-    exp: "<b>✅ Đáp án đúng là D: Sail</b><br>Slide ghi Istio nghĩa là “sail” trong tiếng Hy Lạp.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là nghĩa của Kiali.<br>❌ B/C không phải nghĩa được nêu."
+    exp: "<b>✅ Dap an dung la D: Giam lap lai logic trong tung service</b><br>Istio dua traffic management, security va observability xuong mesh layer, giup service khong phai tu nhung qua nhieu logic giao tiep vao business code.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A khong lien quan service mesh.<br>❌ B la bai toan registry, khong phai Istio.<br>❌ C trai voi tinh chat language-agnostic cua microservices."
   },
   {
-    q: "When did Istio start? (Istio bắt đầu vào thời điểm nào?)",
+    q: "Why is Istio useful in a language-agnostic microservices architecture? (Vi sao Istio huu ich trong kien truc microservices da ngon ngu?)",
     opts: [
-      "May 2017",
-      "January 2018",
-      "May 2005",
-      "January 2025"
+      "It provides a common traffic and security layer regardless of service language (No cung cap mot lop traffic va security chung bat ke service dung ngon ngu nao)",
+      "It forces every service to use only Go (No bat moi service chi duoc dung Go)",
+      "It removes the need for networking between services (No loai bo nhu cau giao tiep mang giua cac service)",
+      "It stores all source code history for the services (No luu toan bo lich su source code)"
     ],
     ans: 0,
-    exp: "<b>✅ Đáp án đúng là A: May 2017</b><br>Slide dry facts ghi Istio started in May 2017.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ B là Kiali.<br>❌ C là năm Git ra đời.<br>❌ D không đúng slide."
+    exp: "<b>✅ Dap an dung la A: Cung cap lop chung doc lap ngon ngu</b><br>Vi Istio xu ly routing, retry, timeout, mTLS va observability o mesh layer, cac service co the dung nhieu ngon ngu khac nhau ma van duoc ap dung chinh sach nhat quan.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ B trai voi kien truc da ngon ngu.<br>❌ C sai vi service van can giao tiep qua network.<br>❌ D la vai tro cua Git, khong phai Istio."
   },
   {
     q: "Istio is developed in which programming language? (Istio được phát triển bằng ngôn ngữ nào?)",
@@ -395,7 +395,7 @@ DEVOPS_QUIZ_DATA.topics[8].questions = [
       "Envoy-to-Envoy communication (Giao tiếp Envoy-to-Envoy)"
     ],
     ans: 3,
-    exp: "<b>✅ Đáp án đúng là D: Envoy-to-Envoy communication</b><br>Slide Istio routing in Kubernetes ghi communication là “Envoy to Envoy”, bypassing the Kubernetes Service.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A/B/C không mô tả Istio service mesh traffic."
+    exp: "<b>✅ Dap an dung la D: Envoy-to-Envoy communication</b><br>Trong service mesh, traffic giua cac service duoc xu ly qua cac Envoy sidecar. Cach dien dat nay nhan manh data plane di qua proxy, thay vi nhung logic giao tiep vao trong code cua tung service.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A/B/C khong mo ta dung traffic path trong Istio."
   },
   {
     q: "What does it mean that Istio configuration is transparent to services? (Istio configuration transparent to services nghĩa là gì?)",
@@ -882,26 +882,26 @@ DEVOPS_QUIZ_DATA.topics[8].questions = [
     exp: "<b>✅ Đáp án đúng là D: Kiali là observability tool cho Istio service mesh</b><br>Kiali giúp visualize mesh, traffic, health, config validation, metrics, traces, logs và security configuration.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là DBMS.<br>❌ B là Docker Hub/ECR/GCR.<br>❌ C thuộc Git."
   },
   {
-    q: "What does Kiali mean in Greek? (Kiali trong tiếng Hy Lạp nghĩa là gì?)",
+    q: "Which Kiali feature helps operators understand service relationships quickly? (Feature nao cua Kiali giup nhin nhanh quan he giua cac service?)",
     opts: [
-      "Spyglass or monocular",
-      "Sail",
-      "Router",
-      "Container"
+      "Mesh topology and traffic visualization (Visual topology va traffic giua cac service)",
+      "Rewriting application source code (Viet lai source code ung dung)",
+      "Building Docker images in CI (Build Docker image trong CI)",
+      "Replacing Kubernetes Services entirely (Thay the hoan toan Kubernetes Service)"
     ],
     ans: 0,
-    exp: "<b>✅ Đáp án đúng là A: Spyglass hoặc monocular</b><br>Slide dry facts ghi Kiali means “spyglass” or “monocular” in Greek.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ B là nghĩa của Istio.<br>❌ C/D không phải nghĩa trong slide."
+    exp: "<b>✅ Dap an dung la A: Mesh topology va traffic visualization</b><br>Kiali manh o kha nang hien thi graph, huong traffic va tinh trang cua service, giup operator hieu nhanh toan canh he thong phan tan.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ B khong phai vai tro cua Kiali.<br>❌ C la bai toan CI/Docker.<br>❌ D sai vi Kiali la cong cu quan sat va validate."
   },
   {
-    q: "When did Kiali start? (Kiali bắt đầu khi nào?)",
+    q: "Why is Kiali useful in daily operations? (Vi sao Kiali huu ich trong van hanh hang ngay?)",
     opts: [
-      "May 2017",
-      "January 2018",
-      "January 2005",
-      "May 2025"
+      "Because it removes the need for logs and metrics entirely (Vi no loai bo hoan toan nhu cau xem log va metrics)",
+      "Because it combines visualization, validation, and observability for the mesh (Vi no ket hop visualization, validation va observability cho mesh)",
+      "Because it replaces Git as the source of truth (Vi no thay Git lam source of truth)",
+      "Because it converts all services into monoliths (Vi no bien moi service thanh monolith)"
     ],
     ans: 1,
-    exp: "<b>✅ Đáp án đúng là B: January 2018</b><br>Slide dry facts ghi Kiali started in January 2018.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là Istio.<br>❌ C/D không đúng slide."
+    exp: "<b>✅ Dap an dung la B: Ket hop quan sat va validation</b><br>Kiali huu ich vi no khong chi ve graph ma con giup xem health, metrics, traces, logs va validate cau hinh Istio trong cung mot boi canh van hanh.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A sai vi Kiali van bo sung cho logs va metrics chu khong thay the hoan toan.<br>❌ C sai vi GitOps source of truth van la Git.<br>❌ D vo ly."
   },
   {
     q: "Kiali is developed using which technologies? (Kiali được phát triển bằng công nghệ nào?)",
@@ -1113,15 +1113,15 @@ DEVOPS_QUIZ_DATA.topics[8].questions = [
     exp: "<b>✅ Đáp án đúng là A: Istio là open-source service mesh</b><br>Istio là service mesh mã nguồn mở; Kiali là observability; Envoy là proxy; Citadel liên quan certificate/security.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ B sai vì Kiali là observability tool.<br>❌ C sai vì Envoy là proxy.<br>❌ D sai vì Citadel tạo certificate cho service account."
   },
   {
-    q: "Which pair is correctly matched? (Cặp nào ghép đúng?)",
+    q: "Which component-role pair is correctly matched? (Cap component-vai tro nao ghep dung?)",
     opts: [
-      "Kiali - means sail in Greek",
-      "Istio - means sail in Greek",
-      "Envoy - means monocular in Greek",
-      "Citadel - means Docker registry"
+      "Kiali - container runtime",
+      "Istio - service mesh for traffic management, security, and observability",
+      "Envoy - Docker registry",
+      "Citadel - Git merge tool"
     ],
     ans: 1,
-    exp: "<b>✅ Đáp án đúng là B: Istio nghĩa là sail</b><br>Istio nghĩa là sail trong tiếng Hy Lạp; Kiali nghĩa là spyglass/monocular.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là nghĩa của Kiali bị nhầm.<br>❌ C sai.<br>❌ D sai."
+    exp: "<b>✅ Dap an dung la B: Istio la service mesh</b><br>Istio dam nhan traffic management, security va observability cho giao tiep service-to-service. Day la vai tro cot loi cua no trong chuong nay.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A sai vi Kiali la cong cu observability/validation, khong phai container runtime.<br>❌ C sai vi Envoy la proxy data plane, khong phai registry.<br>❌ D sai vi Citadel lien quan certificate va security."
   },
   {
     q: "Which pair is correctly matched? (Cặp nào ghép đúng?)",

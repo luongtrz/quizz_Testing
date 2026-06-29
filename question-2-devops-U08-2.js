@@ -354,7 +354,7 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
     exp: "<b>✅ Đáp án đúng là D: Sync Git với cluster</b><br>Slide minh họa ArgoCD Controller sync Git với nhiều cluster như Cluster 1, Cluster 2, Cluster 3.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A không liên quan.<br>❌ B là registry/image storage.<br>❌ C sai."
   },
   {
-    q: "What is Sync in ArgoCD Health Status? (Sync trong ArgoCD Health Status là gì?)",
+    q: "What does Sync mean in ArgoCD application status? (Sync trong trang thai ung dung ArgoCD la gi?)",
     opts: [
       "The process by which an ArgoCD application reaches the desired target state from its current state (Quá trình app ArgoCD đạt trạng thái target mong muốn từ current state)",
       "A Docker build cache cleanup (Dọn Docker build cache)",
@@ -362,18 +362,18 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
       "A Kubernetes namespace rename (Đổi tên namespace Kubernetes)"
     ],
     ans: 0,
-    exp: "<b>✅ Đáp án đúng là A: Quá trình đưa app về desired target state</b><br>Sync là quá trình ArgoCD áp dụng thay đổi để live state tiến tới desired state trong repository.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ B/C/D không phải Sync của ArgoCD."
+    exp: "<b>✅ Dap an dung la A: Qua trinh dua app ve desired target state</b><br>Sync la qua trinh ArgoCD ap dung thay doi de live state tien toi desired state trong repository. Day la nhom trang thai dong bo, khong phai health status.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ B/C/D khong phai y nghia cua Sync trong ArgoCD."
   },
   {
-    q: "What does Healthy mean in ArgoCD? (Healthy trong ArgoCD nghĩa là gì?)",
+    q: "What does Healthy mean in ArgoCD health status? (Healthy trong health status cua ArgoCD nghia la gi?)",
     opts: [
       "The app is deleted (App đã bị xóa)",
-      "The application's live and desired state are in sync (Live state và desired state của app đang khớp nhau)",
+      "The application is operating normally from a health perspective (Ung dung dang van hanh binh thuong ve mat health)",
       "The app has no Git repository (App không có Git repository)",
       "The sync operation is impossible (Không thể sync)"
     ],
     ans: 1,
-    exp: "<b>✅ Đáp án đúng là B: Live và desired state in sync</b><br>Healthy nghĩa là app đang ở trạng thái tốt, live state và desired state phù hợp nhau.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là Missing/Deleted case có thể có, không phải Healthy.<br>❌ C sai.<br>❌ D sai."
+    exp: "<b>✅ Dap an dung la B: Ung dung dang khoe</b><br>Healthy mo ta tinh trang van hanh cua ung dung. Trong thuc te no thuong di cung trang thai sync tot, nhung Healthy va Synced la hai khai niem khac nhau.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A khong phai healthy.<br>❌ C khong lien quan den health.<br>❌ D mo ta loi dong bo, khong phai health."
   },
   {
     q: "What does Out Of Sync mean in ArgoCD? (Out Of Sync trong ArgoCD nghĩa là gì?)",
@@ -387,15 +387,15 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
     exp: "<b>✅ Đáp án đúng là C: Desired state khác live state</b><br>Out Of Sync báo hiệu cluster hiện tại không khớp với trạng thái được định nghĩa trong Git.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A ngược nghĩa.<br>❌ B có thể là Missing nhưng không phải định nghĩa Out Of Sync.<br>❌ D không đúng."
   },
   {
-    q: "What does Progressing mean in ArgoCD? (Progressing trong ArgoCD nghĩa là gì?)",
+    q: "What does Progressing mean in ArgoCD health status? (Progressing trong health status cua ArgoCD nghia la gi?)",
     opts: [
       "The app has permanently failed (App đã fail vĩnh viễn)",
       "The app is unrelated to Git (App không liên quan Git)",
       "The app has no target state (App không có target state)",
-      "The sync operation is ongoing and the app will be healthy soon (Sync đang diễn ra và app sẽ healthy sớm)"
+      "The application is still rolling out or reconciling and has not reached a steady healthy state yet (Ung dung van dang rollout hoac reconcile va chua dat trang thai healthy on dinh)"
     ],
     ans: 3,
-    exp: "<b>✅ Đáp án đúng là D: Sync đang diễn ra</b><br>Progressing nghĩa là ứng dụng đang trong quá trình đạt tới trạng thái healthy/desired state.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A gần với Degraded hơn.<br>❌ B sai vì ArgoCD là GitOps.<br>❌ C không đúng."
+    exp: "<b>✅ Dap an dung la D: Ung dung van dang tien trinh</b><br>Progressing la health status cho biet ung dung van dang rollout, reconcile hoac khoi dong, nen chua dat trang thai on dinh cuoi cung.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A qua tuyet doi va nghiem trong hon.<br>❌ B khong lien quan den health.<br>❌ C khong phai y nghia cua Progressing."
   },
   {
     q: "What does Degraded mean in ArgoCD? (Degraded trong ArgoCD nghĩa là gì?)",
@@ -409,15 +409,15 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
     exp: "<b>✅ Đáp án đúng là A: App health is degrading</b><br>Degraded cho biết app có vấn đề về health, không ở trạng thái khỏe mạnh như mong muốn.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ B là Healthy.<br>❌ C không phải Degraded.<br>❌ D không đúng."
   },
   {
-    q: "Which ArgoCD status means the desired state and live state are the same? (Status nào nghĩa là desired state và live state giống nhau?)",
+    q: "Which ArgoCD sync status means the desired state and live state are aligned? (Sync status nao cho biet desired state va live state da khop?)",
     opts: [
       "Out Of Sync",
+      "Synced",
       "Healthy",
-      "Degraded",
       "Unknown"
     ],
     ans: 1,
-    exp: "<b>✅ Đáp án đúng là B: Healthy</b><br>Theo slide, Healthy nghĩa là live state và desired state của application đang in sync.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A nghĩa là không khớp.<br>❌ C nghĩa là health xấu đi.<br>❌ D là không xác định."
+    exp: "<b>✅ Dap an dung la B: Synced</b><br>Synced la sync status cho biet live state dang khop voi desired state trong Git. Day la khai niem dong bo, khac voi health status nhu Healthy hay Degraded.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A la dang lech state.<br>❌ C la health status, khong phai sync status.<br>❌ D khong mo ta trang thai khop state."
   },
   {
     q: "Which ArgoCD status means the desired state and live state are not the same? (Status nào nghĩa là desired state và live state không giống nhau?)",
@@ -629,7 +629,7 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
     exp: "<b>✅ Đáp án đúng là A: Sync</b><br>Sync là quá trình ArgoCD đưa application từ current state tới desired target state trong Git.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ B là xóa.<br>❌ C/D là Git operations khác."
   },
   {
-    q: "Which ArgoCD status should appear when live state matches desired state and app is good? (Status nào xuất hiện khi live state khớp desired state và app tốt?)",
+    q: "Which ArgoCD health status should appear when the application itself is in good condition? (Health status nao xuat hien khi ban than ung dung dang o tinh trang tot?)",
     opts: [
       "Out Of Sync",
       "Healthy",
@@ -637,7 +637,7 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
       "Missing"
     ],
     ans: 1,
-    exp: "<b>✅ Đáp án đúng là B: Healthy</b><br>Healthy nghĩa là application live state và desired state đang in sync và app ở trạng thái tốt.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A là lệch state.<br>❌ C health xấu đi.<br>❌ D resource bị thiếu."
+    exp: "<b>✅ Dap an dung la B: Healthy</b><br>Healthy la health status cho biet ung dung dang van hanh tot. Neu xet them goc do dong bo thi ung dung ly tuong se vua Healthy vua Synced, nhung cau nay dang hoi rieng ve health.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A la sync status xau, khong phai health tot.<br>❌ C la health dang xau di.<br>❌ D cho thay resource co van de."
   },
   {
     q: "Which ArgoCD status indicates the app may become healthy soon because sync is still ongoing? (Status nào cho biết app có thể healthy sớm vì sync vẫn đang diễn ra?)",
@@ -739,15 +739,15 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
     exp: "<b>✅ Đáp án đúng là C: Pull từ Git và apply vào cluster</b><br>ArgoCD triển khai theo GitOps pattern: Git là source of manifests, ArgoCD sync vào destination cluster.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A/B/D không đúng vai trò ArgoCD."
   },
   {
-    q: "Which slide topic comes after 'Why we need GitOps?' in the agenda? (Trong agenda, mục nào đứng sau 'Why we need GitOps?')",
+    q: "Which statement best reflects why GitOps is easier to audit? (Phat bieu nao dung nhat ve ly do GitOps de audit hon?)",
     opts: [
-      "What is Docker?",
-      "Docker Networking",
-      "Kubernetes Storage",
-      "GitOps Principles?"
+      "Because changes are made directly on the cluster with no history (Vi thay doi duoc sua truc tiep tren cluster va khong co history)",
+      "Because the desired state is hidden from Git (Vi desired state bi an khoi Git)",
+      "Because auditing is not needed when using Kubernetes (Vi da dung Kubernetes thi khong can audit)",
+      "Because changes are versioned, reviewable, and traceable in Git (Vi thay doi duoc version hoa, review va trace trong Git)"
     ],
     ans: 3,
-    exp: "<b>✅ Đáp án đúng là D: GitOps Principles?</b><br>Agenda trong slide gồm What is GitOps, GitOps Operation Model, Why we need GitOps, GitOps Principles, What is ArgoCD, Demo.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A/B/C thuộc chương Docker/Kubernetes, không phải agenda GitOps này."
+    exp: "<b>✅ Dap an dung la D: Version, review va trace trong Git</b><br>GitOps de audit hon vi moi thay doi desired state deu di qua Git history, diff, review va approval process. Nho do team biet ai doi gi, khi nao va vi sao.<br><br><b>Tai sao cac dap an khac sai?</b><br>❌ A/B lam mat audit trail.<br>❌ C sai vi audit van rat quan trong."
   },
   {
     q: "Which pair is correctly matched? (Cặp nào ghép đúng?)",
@@ -791,7 +791,7 @@ DEVOPS_QUIZ_DATA.topics[7].questions = [
       "Progressing - sync operation is ongoing"
     ],
     ans: 3,
-    exp: "<b>✅ Đáp án đúng là D: Progressing nghĩa là sync đang diễn ra</b><br>Progressing trong ArgoCD Health Status là sync operation đang ongoing và app có thể healthy sớm.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A sai vì Git là trung tâm GitOps.<br>❌ B sai.<br>❌ C là GitOps model hơn."
+    exp: "<b>✅ Đáp án đúng là D: Progressing nghĩa là ung dung van dang tien trinh</b><br>Progressing trong ArgoCD health status cho thay ung dung van dang rollout hoac reconcile, nen co the healthy sau khi dat trang thai on dinh.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ A sai vì Git là trung tâm GitOps.<br>❌ B sai.<br>❌ C là GitOps model hơn."
   },
   {
     q: "Which is the best reason to avoid direct cluster changes in GitOps? (Lý do tốt nhất để tránh sửa cluster trực tiếp trong GitOps là gì?)",

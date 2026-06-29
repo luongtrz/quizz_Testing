@@ -104,17 +104,32 @@ class QuizApp {
             btn.addEventListener('click', (e) => this.filterReview(e.target.dataset.filter));
         });
 
-        document.addEventListener('keydown', (e) => {
-            if (!document.getElementById('quizScreen').classList.contains('active')) return;
+        document.addEventListener('keydown', (e) => this.handleQuizKeydown(e));
+    }
 
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                this.prevQuestion();
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                this.nextQuestion();
-            }
-        });
+    handleQuizKeydown(e) {
+        if (!document.getElementById('quizScreen').classList.contains('active')) return;
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+
+        const key = e.key.toLowerCase();
+
+        if (key === 'arrowleft') {
+            e.preventDefault();
+            this.prevQuestion();
+            return;
+        }
+
+        if (key === 'arrowright') {
+            e.preventDefault();
+            this.nextQuestion();
+            return;
+        }
+
+        if (!['a', 'b', 'c', 'd'].includes(key)) return;
+        if (this.answers[this.currentIndex] !== undefined) return;
+
+        e.preventDefault();
+        this.selectAnswer(['a', 'b', 'c', 'd'].indexOf(key));
     }
 
     renderSubjectTabs() {
@@ -390,7 +405,7 @@ class QuizApp {
                 cls += ' selected';
             }
 
-            return `<button class="${cls}" data-index="${i}" ${answered ? 'disabled' : ''}>
+            return `<button class="${cls}" data-index="${i}" title="Phim ${letters[i]}" ${answered ? 'disabled' : ''}>
                 <strong>${letters[i]}.</strong>${opt}
             </button>`;
         }).join('');
