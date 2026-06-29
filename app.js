@@ -1,6 +1,7 @@
-// Quiz App
 class QuizApp {
     constructor() {
+        this.currentSubjectKey = 'testing';
+        this.runtimeQuizData = {};
         this.currentTopic = null;
         this.questions = [];
         this.currentIndex = 0;
@@ -13,16 +14,39 @@ class QuizApp {
     init() {
         this.initTheme();
         this.bindEvents();
-        this.renderTopics();
+        this.renderSubjectTabs();
 
-        // Check for saved quiz state
-        const saved = localStorage.getItem('quizState');
-        if (saved) {
-            if (confirm('Bạn có bài quiz đang làm dở. Tiếp tục?')) {
-                this.restoreQuizState();
-            }
-            // If Cancel, keep state for next visit
+        const savedSubject = localStorage.getItem('activeSubject') || this.currentSubjectKey;
+        this.setSubject(savedSubject, { promptRestore: false });
+        this.promptRestoreForCurrentSubject();
+    }
+
+    getSubjectRegistry() {
+        return window.QUIZ_SETS || {};
+    }
+
+    getSubjectKeys() {
+        return Object.keys(this.getSubjectRegistry());
+    }
+
+    getSubjectConfig(subjectKey = this.currentSubjectKey) {
+        return this.getSubjectRegistry()[subjectKey] || null;
+    }
+
+    getQuizData(subjectKey = this.currentSubjectKey) {
+        if (!this.runtimeQuizData[subjectKey]) {
+            this.runtimeQuizData[subjectKey] = this.buildRuntimeQuizData(subjectKey);
         }
+
+        return this.runtimeQuizData[subjectKey];
+    }
+
+    getStateStorageKey(subjectKey = this.currentSubjectKey) {
+        return `quizState:${subjectKey}`;
+    }
+
+    getHistoryStorageKey(subjectKey = this.currentSubjectKey) {
+        return `quizHistory:${subjectKey}`;
     }
 
     initTheme() {
@@ -56,11 +80,15 @@ class QuizApp {
         document.getElementById('btnBackReview').addEventListener('click', () => this.showScreen('resultScreen'));
         document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
 
-        // Add home navigation to logo click
+        document.getElementById('subjectTabs').addEventListener('click', (e) => {
+            const tab = e.target.closest('.subject-tab');
+            if (!tab) return;
+            this.setSubject(tab.dataset.subject);
+        });
+
         document.querySelector('.logo').addEventListener('click', () => {
-            // Check if quiz is active and has progress
             const quizActive = document.getElementById('quizScreen').classList.contains('active');
-            const hasProgress = this.questions && this.questions.length > 0 &&
+            const hasProgress = this.questions.length > 0 &&
                 (this.currentIndex > 0 || Object.keys(this.answers).length > 0);
 
             if (quizActive && hasProgress) {
@@ -72,13 +100,11 @@ class QuizApp {
             }
         });
 
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        document.querySelectorAll('.filter-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => this.filterReview(e.target.dataset.filter));
         });
 
-        // Keyboard shortcuts for quiz navigation
         document.addEventListener('keydown', (e) => {
-            // Only work when quiz screen is active
             if (!document.getElementById('quizScreen').classList.contains('active')) return;
 
             if (e.key === 'ArrowLeft') {
@@ -91,9 +117,192 @@ class QuizApp {
         });
     }
 
+    renderSubjectTabs() {
+        const tabs = document.getElementById('subjectTabs');
+        const subjectKeys = this.getSubjectKeys();
+
+        tabs.innerHTML = subjectKeys.map((subjectKey) => {
+            const subject = this.getSubjectConfig(subjectKey);
+            const activeClass = subjectKey === this.currentSubjectKey ? ' active' : '';
+            return `
+                <button class="subject-tab${activeClass}" data-subject="${subjectKey}" role="tab" aria-selected="${subjectKey === this.currentSubjectKey}">
+                    ${subject?.label || subjectKey}
+                </button>
+            `;
+        }).join('');
+    }
+
+    updateSubjectUI() {
+        const subject = this.getSubjectConfig();
+        if (!subject) return;
+
+        document.querySelector('.logo').textContent = subject.title || 'Quiz App';
+        document.getElementById('subjectTitle').textContent = subject.title || subject.label || 'Quiz App';
+        document.getElementById('subjectDescription').textContent = subject.description || 'Chọn bộ câu hỏi bạn muốn ôn tập.';
+        document.title = subject.title || 'Quiz App';
+    }
+
+    buildRuntimeQuizData(subjectKey) {
+        const sourceData = this.getSubjectConfig(subjectKey)?.data || { topics: [] };
+
+        return {
+            ...sourceData,
+            topics: sourceData.topics.map((topic) => ({
+                ...topic,
+                questions: this.randomizeTopicQuestions(topic.questions || [])
+            }))
+        };
+    }
+
+    randomizeTopicQuestions(questions) {
+        const targetAnswers = this.buildBalancedAnswerTargets(questions.length);
+        const randomizedQuestions = questions.map((question, index) => this.randomizeQuestion(question, targetAnswers[index]));
+        return this.shuffle(randomizedQuestions);
+    }
+
+    buildBalancedAnswerTargets(total) {
+        const base = Math.floor(total / 4);
+        const remainder = total % 4;
+        const counts = [base, base, base, base];
+
+        this.shuffle([0, 1, 2, 3]).slice(0, remainder).forEach((index) => {
+            counts[index]++;
+        });
+
+        const targets = [];
+        counts.forEach((count, answerIndex) => {
+            for (let i = 0; i < count; i++) {
+                targets.push(answerIndex);
+            }
+        });
+
+        return this.shuffle(targets);
+    }
+
+    randomizeQuestion(question, forcedAnswerIndex = null) {
+        const questionClone = {
+            ...question,
+            opts: [...(question.opts || [])]
+        };
+
+        if (questionClone.opts.length !== 4 || !Number.isInteger(questionClone.ans)) {
+            return questionClone;
+        }
+
+        const optionIndexes = this.buildOptionOrder(questionClone.ans, forcedAnswerIndex);
+        const remappedOptions = optionIndexes.map((index) => questionClone.opts[index]);
+        const newAnswerIndex = optionIndexes.indexOf(questionClone.ans);
+
+        return {
+            ...questionClone,
+            opts: remappedOptions,
+            ans: newAnswerIndex,
+            exp: this.remapExplanation(questionClone.exp, optionIndexes, newAnswerIndex)
+        };
+    }
+
+    buildOptionOrder(correctAnswerIndex, forcedAnswerIndex) {
+        if (!Number.isInteger(forcedAnswerIndex) || forcedAnswerIndex < 0 || forcedAnswerIndex > 3) {
+            return this.shuffle([0, 1, 2, 3]);
+        }
+
+        const distractors = this.shuffle([0, 1, 2, 3].filter((index) => index !== correctAnswerIndex));
+        const optionIndexes = [];
+        let distractorCursor = 0;
+
+        for (let index = 0; index < 4; index++) {
+            if (index === forcedAnswerIndex) {
+                optionIndexes.push(correctAnswerIndex);
+            } else {
+                optionIndexes.push(distractors[distractorCursor++]);
+            }
+        }
+
+        return optionIndexes;
+    }
+
+    remapExplanation(explanation, optionIndexes, newAnswerIndex) {
+        if (!explanation) return explanation;
+
+        const letters = ['A', 'B', 'C', 'D'];
+        const oldToNew = new Array(4);
+        optionIndexes.forEach((oldIndex, newIndex) => {
+            oldToNew[oldIndex] = newIndex;
+        });
+
+        const letterMap = Object.fromEntries(
+            letters.map((letter, oldIndex) => [letter, letters[oldToNew[oldIndex]]])
+        );
+
+        return explanation
+            .split('<br>')
+            .map((line, lineIndex) => {
+                if (lineIndex === 0) {
+                    return line.replace(/([ABCD])(?=[:.])/, letters[newAnswerIndex]);
+                }
+
+                return line.replace(
+                    /^([^ABCD]*)([ABCD](?:\s*,\s*[ABCD])*)(?=[:.\s<])/,
+                    (_, prefix, cluster) => prefix + cluster.replace(/[ABCD]/g, (letter) => letterMap[letter])
+                );
+            })
+            .join('<br>');
+    }
+
+    resetRuntimeState() {
+        this.currentTopic = null;
+        this.questions = [];
+        this.currentIndex = 0;
+        this.answers = {};
+        this.correctCount = 0;
+        this.incorrectCount = 0;
+        this.updateStats();
+    }
+
+    setSubject(subjectKey, { promptRestore = true } = {}) {
+        const subjectKeys = this.getSubjectKeys();
+        if (!subjectKeys.length) return;
+
+        const nextSubjectKey = this.getSubjectConfig(subjectKey) ? subjectKey : subjectKeys[0];
+        const switchingSubject = this.currentSubjectKey !== nextSubjectKey;
+
+        if (switchingSubject && this.questions.length > 0) {
+            this.saveQuizState();
+        }
+
+        this.currentSubjectKey = nextSubjectKey;
+        localStorage.setItem('activeSubject', this.currentSubjectKey);
+
+        this.resetRuntimeState();
+        this.renderSubjectTabs();
+        this.updateSubjectUI();
+        this.renderTopics();
+        this.showScreen('homeScreen');
+
+        if (promptRestore) {
+            this.promptRestoreForCurrentSubject();
+        }
+    }
+
+    promptRestoreForCurrentSubject() {
+        const saved = localStorage.getItem(this.getStateStorageKey());
+        if (!saved) return;
+
+        if (confirm('Bạn có bài quiz đang làm dở ở môn này. Tiếp tục?')) {
+            this.restoreQuizState();
+        }
+    }
+
     renderTopics() {
+        const quizData = this.getQuizData();
         const grid = document.getElementById('topicGrid');
-        grid.innerHTML = QUIZ_DATA.topics.map(topic => `
+
+        if (!quizData.topics.length) {
+            grid.innerHTML = '<div class="topic-empty">Chưa có chủ đề nào cho môn này.</div>';
+            return;
+        }
+
+        grid.innerHTML = quizData.topics.map((topic) => `
             <div class="topic-card" data-topic="${topic.id}">
                 <div class="topic-icon">${topic.icon}</div>
                 <div class="topic-info">
@@ -103,39 +312,44 @@ class QuizApp {
             </div>
         `).join('');
 
-        grid.querySelectorAll('.topic-card').forEach(card => {
+        grid.querySelectorAll('.topic-card').forEach((card) => {
             card.addEventListener('click', () => this.startTopicQuiz(card.dataset.topic));
         });
     }
 
     startTopicQuiz(topicId) {
-        const topic = QUIZ_DATA.topics.find(t => t.id === topicId);
+        const topic = this.getQuizData().topics.find((item) => item.id === topicId);
         if (!topic) return;
+
         this.currentTopic = topic;
-        this.questions = topic.questions.map((q, i) => ({ ...q, originalIndex: i, topic: topic }));
+        this.questions = topic.questions.map((q, i) => ({ ...q, originalIndex: i, topic }));
         this.startQuiz();
     }
 
     startRandomQuiz() {
-        this.currentTopic = { name: 'Ngẫu Nhiên', icon: '🎲' };
+        this.currentTopic = { name: 'Ngẫu nhiên', icon: '🎲' };
         const allQuestions = [];
-        QUIZ_DATA.topics.forEach(topic => {
+
+        this.getQuizData().topics.forEach((topic) => {
             topic.questions.forEach((q, i) => {
-                allQuestions.push({ ...q, originalIndex: i, topic: topic });
+                allQuestions.push({ ...q, originalIndex: i, topic });
             });
         });
+
         this.questions = this.shuffle(allQuestions).slice(0, 20);
         this.startQuiz();
     }
 
     startAllQuiz() {
-        this.currentTopic = { name: 'Tất Cả', icon: '📚' };
+        this.currentTopic = { name: 'Tất cả', icon: '📚' };
         const allQuestions = [];
-        QUIZ_DATA.topics.forEach(topic => {
+
+        this.getQuizData().topics.forEach((topic) => {
             topic.questions.forEach((q, i) => {
-                allQuestions.push({ ...q, originalIndex: i, topic: topic });
+                allQuestions.push({ ...q, originalIndex: i, topic });
             });
         });
+
         this.questions = this.shuffle(allQuestions);
         this.startQuiz();
     }
@@ -152,6 +366,8 @@ class QuizApp {
 
     renderQuestion() {
         const q = this.questions[this.currentIndex];
+        if (!q) return;
+
         document.getElementById('currentQ').textContent = this.currentIndex + 1;
         document.getElementById('totalQ').textContent = this.questions.length;
         document.getElementById('progressFill').style.width = `${((this.currentIndex + 1) / this.questions.length) * 100}%`;
@@ -173,12 +389,12 @@ class QuizApp {
             } else if (userAnswer === i) {
                 cls += ' selected';
             }
+
             return `<button class="${cls}" data-index="${i}" ${answered ? 'disabled' : ''}>
                 <strong>${letters[i]}.</strong>${opt}
             </button>`;
         }).join('');
 
-        // Render Explanation if answered
         const expContainer = document.getElementById('explanationContent');
         if (answered) {
             expContainer.innerHTML = `
@@ -191,28 +407,30 @@ class QuizApp {
         }
 
         if (!answered) {
-            optsList.querySelectorAll('.option-btn').forEach(opt => {
-                opt.addEventListener('click', (e) => this.selectAnswer(parseInt(opt.dataset.index)));
+            optsList.querySelectorAll('.option-btn').forEach((opt) => {
+                opt.addEventListener('click', () => this.selectAnswer(parseInt(opt.dataset.index, 10)));
             });
         }
 
         document.getElementById('btnPrev').disabled = this.currentIndex === 0;
-        const btnNext = document.getElementById('btnNext');
-        btnNext.textContent = this.currentIndex === this.questions.length - 1 ? 'Xem kết quả' : 'Tiếp →';
+        document.getElementById('btnNext').textContent = this.currentIndex === this.questions.length - 1 ? 'Xem kết quả' : 'Tiếp →';
     }
 
     selectAnswer(index) {
         if (this.answers[this.currentIndex] !== undefined) return;
+
         this.answers[this.currentIndex] = index;
         const q = this.questions[this.currentIndex];
+
         if (index === q.ans) {
             this.correctCount++;
         } else {
             this.incorrectCount++;
         }
+
         this.updateStats();
         this.renderQuestion();
-        this.saveQuizState(); // Auto-save after each answer
+        this.saveQuizState();
     }
 
     updateStats() {
@@ -224,7 +442,7 @@ class QuizApp {
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.renderQuestion();
-            this.saveQuizState(); // Auto-save on navigation
+            this.saveQuizState();
         }
     }
 
@@ -232,7 +450,7 @@ class QuizApp {
         if (this.currentIndex < this.questions.length - 1) {
             this.currentIndex++;
             this.renderQuestion();
-            this.saveQuizState(); // Auto-save on navigation
+            this.saveQuizState();
         } else {
             this.showResults();
         }
@@ -250,6 +468,7 @@ class QuizApp {
 
         const icon = document.getElementById('resultIcon');
         const title = document.getElementById('resultTitle');
+
         if (percent >= 80) {
             icon.textContent = '🎉';
             title.textContent = 'Xuất sắc!';
@@ -264,10 +483,8 @@ class QuizApp {
             title.textContent = 'Cần ôn tập thêm!';
         }
 
-        // Save to history and clear active state
         this.saveQuizHistory();
         this.clearQuizState();
-
         this.showScreen('resultScreen');
     }
 
@@ -284,20 +501,20 @@ class QuizApp {
             return { q, i, userAns, status };
         });
 
-        if (filter === 'incorrect') items = items.filter(x => x.status === 'incorrect');
-        if (filter === 'skipped') items = items.filter(x => x.status === 'skipped');
+        if (filter === 'incorrect') items = items.filter((item) => item.status === 'incorrect');
+        if (filter === 'skipped') items = items.filter((item) => item.status === 'skipped');
 
         list.innerHTML = items.map(({ q, i, userAns, status }) => {
             const statusText = status === 'correct' ? 'Đúng' : status === 'incorrect' ? 'Sai' : 'Bỏ qua';
-            const statusColor = status === 'correct' ? 'text-success' : status === 'incorrect' ? 'text-error' : 'text-secondary';
+            const statusColor = status === 'correct' ? 'success' : status === 'incorrect' ? 'error' : 'secondary';
 
             return `<div class="review-item">
                 <div class="question-meta" style="margin-bottom:0.5rem">
                     <span>Câu ${i + 1}</span>
-                    <span style="float:right; color: var(--${status === 'correct' ? 'success' : status === 'incorrect' ? 'error' : 'secondary'})">${statusText}</span>
+                    <span style="float:right; color: var(--${statusColor})">${statusText}</span>
                 </div>
                 <div class="review-q-text">${q.q}</div>
-                
+
                 ${status !== 'correct' ? `
                     ${userAns !== undefined ? `
                     <div class="review-opt user-wrong">
@@ -311,7 +528,7 @@ class QuizApp {
                         <strong>Bạn chọn:</strong> ${letters[q.ans]}. ${q.opts[q.ans]}
                     </div>
                 `}
-                
+
                 <div class="review-explanation">
                     <strong>💡 Giải thích chi tiết:</strong>
                     ${q.exp || 'Chưa có giải thích cho câu hỏi này.'}
@@ -323,14 +540,16 @@ class QuizApp {
     }
 
     filterReview(filter) {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        document.querySelectorAll('.filter-btn').forEach((btn) => {
             btn.classList.toggle('active', btn.dataset.filter === filter);
         });
         this.showReview(filter);
     }
 
     goHome() {
-        this.clearQuizState(); // Clear saved progress
+        this.clearQuizState();
+        this.resetRuntimeState();
+        this.renderTopics();
         this.showScreen('homeScreen');
     }
 
@@ -339,7 +558,7 @@ class QuizApp {
     }
 
     showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach((screen) => screen.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
 
         if (screenId === 'quizScreen') {
@@ -360,9 +579,9 @@ class QuizApp {
         return arr;
     }
 
-    // ============ LocalStorage Persistence ============
-
     saveQuizState() {
+        if (!this.questions.length) return;
+
         const state = {
             currentTopic: this.currentTopic,
             questions: this.questions,
@@ -372,16 +591,16 @@ class QuizApp {
             incorrectCount: this.incorrectCount,
             timestamp: Date.now()
         };
-        localStorage.setItem('quizState', JSON.stringify(state));
+
+        localStorage.setItem(this.getStateStorageKey(), JSON.stringify(state));
     }
 
     restoreQuizState() {
-        const saved = localStorage.getItem('quizState');
+        const saved = localStorage.getItem(this.getStateStorageKey());
         if (!saved) return false;
 
         try {
             const state = JSON.parse(saved);
-            // Check if state is less than 24 hours old
             if (Date.now() - state.timestamp > 24 * 60 * 60 * 1000) {
                 this.clearQuizState();
                 return false;
@@ -398,19 +617,20 @@ class QuizApp {
             this.showScreen('quizScreen');
             this.renderQuestion();
             return true;
-        } catch (e) {
+        } catch (error) {
             this.clearQuizState();
             return false;
         }
     }
 
     clearQuizState() {
-        localStorage.removeItem('quizState');
+        localStorage.removeItem(this.getStateStorageKey());
     }
 
-    saveQuizHistory(result) {
+    saveQuizHistory() {
         const history = this.getQuizHistory();
         history.unshift({
+            subject: this.getSubjectConfig()?.label || this.currentSubjectKey,
             topic: this.currentTopic?.name || 'Unknown',
             total: this.questions.length,
             correct: this.correctCount,
@@ -418,13 +638,13 @@ class QuizApp {
             percent: Math.round((this.correctCount / this.questions.length) * 100),
             date: new Date().toISOString()
         });
-        // Keep only last 20 results
-        localStorage.setItem('quizHistory', JSON.stringify(history.slice(0, 20)));
+
+        localStorage.setItem(this.getHistoryStorageKey(), JSON.stringify(history.slice(0, 20)));
     }
 
     getQuizHistory() {
         try {
-            return JSON.parse(localStorage.getItem('quizHistory')) || [];
+            return JSON.parse(localStorage.getItem(this.getHistoryStorageKey())) || [];
         } catch {
             return [];
         }

@@ -293,3 +293,12 @@ QUIZ_DATA.topics[19].questions = [
     { q: "Why is Dev-Test collaboration important? (Tại sao sự hợp tác Dev-Test lại quan trọng?)", opts: ["Clear roles (Vai trò rõ ràng)", "Integrate testing into development (Tích hợp kiểm thử vào phát triển)", "Separate processes (Quy trình tách biệt)", "Different toolsets (Bộ công cụ khác nhau)"], ans: 1, exp: "<b>✅ Đáp án đúng là B: Integrate testing into development</b><br>Shift-Left Testing: Tester và Dev phối hợp sớm để đưa testing vào ngay trong quá trình phát triển (CI/CD), thay vì đợi code xong mới quăng qua cho test.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ <b>C:</b> Tách biệt (Silo) gây chậm trễ." }
 
 ];
+
+window.QUIZ_SETS = window.QUIZ_SETS || {};
+window.QUIZ_SETS.testing = {
+    key: 'testing',
+    label: 'Testing',
+    title: 'Software Testing Quiz',
+    description: 'Bo cau hoi on tap Software Testing.',
+    data: QUIZ_DATA
+};
