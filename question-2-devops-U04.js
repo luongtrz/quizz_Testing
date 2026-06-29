@@ -1,7 +1,5 @@
 // 0.4 Jenkins-2 (60 câu)
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[3].questions = [
+DEVOPS_QUIZ_DATA.topics[3].questions = [
   // 1. Terminology - Q1-5
   {
     q: "What is Autoscaling in DevOps? (Autoscaling trong DevOps là gì?)",

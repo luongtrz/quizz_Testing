@@ -1,4 +1,4 @@
-const QUIZ_DATA = {
+const TESTING_QUIZ_DATA = {
     topics: [
         { id: 'fundamentals', name: 'Testing Fundamentals', icon: '📘', questions: [] },
         { id: 'stlc', name: 'STLC', icon: '🔄', questions: [] },
@@ -24,6 +24,9 @@ const QUIZ_DATA = {
 };
 
 // 1. Testing Fundamentals (10 câu - Q1-10 section 1)
+
+
+const QUIZ_DATA = TESTING_QUIZ_DATA;
 QUIZ_DATA.topics[0].questions = [
     { q: "Which testing level focuses on the overall system integration? (Cấp độ kiểm thử nào tập trung vào tích hợp hệ thống tổng thể?)", opts: ["Unit testing (Kiểm thử đơn vị)", "Regression testing (Kiểm thử hồi quy)", "Acceptance testing (Kiểm thử chấp nhận)", "Integration testing (Kiểm thử tích hợp)"], ans: 3, exp: "<b>✅ Đáp án đúng là D: Integration Testing</b><br>Integration Testing (Kiểm thử tích hợp) là cấp độ kiểm thử tập trung vào việc verified sự tương tác, giao tiếp và truyền dữ liệu giữa các module hoặc thành phần hệ thống khi chúng được kết hợp với nhau.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ <b>A. Unit Testing:</b> Kiểm thử mức thấp nhất, tập trung vào từng đơn vị riêng lẻ (hàm, phương thức) một cách cô lập (isolated), chưa quan tâm đến việc chúng tương tác với nhau.<br>❌ <b>B. Regression Testing:</b> Đây là LOẠI kiểm thử (test type) thực hiện khi có thay đổi code để đảm bảo không phát sinh lỗi mới, không phải là một LEVEL kiểm thử cụ thể.<br>❌ <b>C. Acceptance Testing:</b> Cấp độ kiểm thử cao nhất, xác nhận hệ thống có thỏa mãn yêu cầu nghiệp vụ và user needs hay không, không tập trung vào kỹ thuật tích hợp module." },
     { q: "What is the difference between static testing and dynamic testing? (Sự khác biệt giữa kiểm thử tĩnh và kiểm thử động là gì?)", opts: ["Static testing is performed by developers, dynamic testing by testers (Static do developer làm, Dynamic do tester làm)", "Static testing is performed before coding, dynamic testing after coding (Static làm trước khi code, Dynamic làm sau khi code)", "Static testing involves executing code, dynamic testing involves reviewing code (Static chạy code, Dynamic review code)", "There is no difference (Không có sự khác biệt)"], ans: 1, exp: "<b>✅ Đáp án đúng là B: Static trước coding, Dynamic sau coding (theo cách hiểu thông thường)</b><br>Theo chuẩn ISTQB chính xác:<br>- <b>Static Testing:</b> Kiểm tra tài liệu (Requirement, Design) hoặc Review Code mà KHÔNG chạy chương trình. (Phần Review Requirements làm TRƯỚC coding, phần Review Code làm trong/sau coding).<br>- <b>Dynamic Testing:</b> Bắt buộc phải CHẠY chương trình.<br>Trong ngữ cảnh câu hỏi này, đáp án B là hợp lý nhất để phân biệt thời điểm bắt đầu sớm nhất.<br><br><b>Tại sao các đáp án khác sai?</b><br>❌ <b>A:</b> Cả Dev và Tester đều làm được cả hai.<br>❌ <b>C:</b> Ngược lại mới đúng.<br>❌ <b>D:</b> Khác biệt rõ ràng về Execution." },
@@ -300,5 +303,5 @@ window.QUIZ_SETS.testing = {
     label: 'Testing',
     title: 'Software Testing Quiz',
     description: 'Bo cau hoi on tap Software Testing.',
-    data: QUIZ_DATA
+    data: TESTING_QUIZ_DATA
 };

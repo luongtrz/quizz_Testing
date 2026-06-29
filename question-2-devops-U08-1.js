@@ -1,8 +1,6 @@
 // 08-1 Deployment Strategies (40 câu)
 // Đáp án chia đều: ans 0/1/2/3 mỗi loại 10 câu
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[6].questions = [
+DEVOPS_QUIZ_DATA.topics[6].questions = [
   {
     q: "What is a deployment strategy? (Deployment strategy là gì?)",
     opts: [

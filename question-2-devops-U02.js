@@ -1,7 +1,5 @@
 // 0.2 Architecture Patterns (60 câu)
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[1].questions = [
+DEVOPS_QUIZ_DATA.topics[1].questions = [
   {
     "q": "What is Layered Architecture? (Layered Architecture là gì?)",
     "opts": [

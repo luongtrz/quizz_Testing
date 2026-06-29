@@ -1,7 +1,5 @@
 // 0.5 Docker + Docker Multi Stage (96 câu)
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[4].questions = [
+DEVOPS_QUIZ_DATA.topics[4].questions = [
   // 1. Virtual Environments - Q1-7
   {
     q: "What is the main purpose of a virtual environment? (Mục đích chính của virtual environment là gì?)",

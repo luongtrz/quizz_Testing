@@ -1,7 +1,5 @@
 // 0.6 Kubernetes (K8S) - 96 câu
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[5].questions = [
+DEVOPS_QUIZ_DATA.topics[5].questions = [
   {
     q: "What is Docker Swarm? (Docker Swarm là gì?)",
     opts: [

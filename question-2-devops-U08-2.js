@@ -1,8 +1,6 @@
 // 08-2 GitOps and ArgoCD (64 câu)
 // Đáp án chia đều: ans 0/1/2/3 mỗi loại 16 câu
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[7].questions = [
+DEVOPS_QUIZ_DATA.topics[7].questions = [
   {
     q: "What is the main problem in the Traditional Ops Process? (Vấn đề chính trong Traditional Ops Process là gì?)",
     opts: [

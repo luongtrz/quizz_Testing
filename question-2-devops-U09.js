@@ -1,8 +1,6 @@
 // 09. Service Mesh with Istio and Kiali (80 câu)
 // Đáp án chia đều: ans 0/1/2/3 mỗi loại 20 câu
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[8].questions = [
+DEVOPS_QUIZ_DATA.topics[8].questions = [
   {
     q: "What is a monolithic application? (Monolithic application là gì?)",
     opts: [

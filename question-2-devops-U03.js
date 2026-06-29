@@ -1,7 +1,5 @@
 // 0.3 Git v2 - Version Control & Git (75 câu)
-window.QUIZ_SETS = window.QUIZ_SETS || {};
-window.QUIZ_SETS.devops = window.QUIZ_SETS.devops || { data: { topics: [] } };
-window.QUIZ_SETS.devops.data.topics[2].questions = [
+DEVOPS_QUIZ_DATA.topics[2].questions = [
   {
     "q": "What is a Version Control System (VCS)? (Version Control System là gì?)",
     "opts": [
